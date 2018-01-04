@@ -64,15 +64,17 @@
                 }
 
         </style>
+        <link rel="shortcut icon" href="#" />
         <script src="js/jquery.min.js"></script>
         <script src="js/vanadium.js"></script>
         <script>
             
-            $( function() {
-
-                $( "input[class*=:required]" ).after( "<span> *</span>" );
-            });
-
+            $( function () {
+               
+               $( "input[class*=:required]" ).after( "<span> *</span>" );
+                
+            } );
+            
             Vanadium.config = {
             
                 valid_class: "rightformcss",
@@ -89,7 +91,7 @@
                 this.initialize( className, validationFunction, error_message, message, init );
             }
 
-                Vanadium.Type.prototype = {
+            Vanadium.Type.prototype = {
 
                     initialize: function ( className, validationFunction, error_message, message, init ) {
 
@@ -102,9 +104,9 @@
 
                     test: function ( value ) {
 
-                        return this.validtionFunction.call( this, value );
+                        return this.validationFunction.call( this, value );
                     },
-
+                   
                     validMessage: function () {
 
                         return this.message;
@@ -129,7 +131,7 @@
                     }
                 };
 
-                Vanadium.setupValidatorTypes = function () {
+            Vanadium.setupValidatorTypes = function () {
 
                     Vanadium.addValidatorType( "empty", function ( v ) {
 
@@ -170,15 +172,15 @@
 
                         ["integer", function ( v ) {
 
-                            if ( !Vanadium.validators_types['empty'].test( v ) ) 
+                            if ( Vanadium.validators_types['empty'].test( v ) ) 
                                 return true;
 
                             var f = parseFloat( v );
 
                             return ( !isNaN( f ) && f.toString() === v && f === Math.round( f ) );
 
-                        }, "Please enter a whole integer."],
-
+                        }, "Please enter a whole integer."],                        
+                        
                         ["number", function ( v ) {
 
                             return Vanadium.validators_types[ "empty" ].test( v ) || ( !isNaN( v ) && !/^\s+$/.test( v ) );
@@ -188,59 +190,56 @@
                         ["digits", function ( v ) {
 
                             return Vanadium.validators_types[ "empty" ].test( v ) || !/[^\d]/.test( v );
-
+   
                         }, "Please enter a non-nagetive number"],
 
                         ["alpha", function ( v ) {
 
-                            return Vanadium.validators_types[ "empty" ].test( v ) || !/^[a-zA-Z\u00C0-\u00FF\u0100-\u017E\u0391-\u03D6]+$/.test( v );    
+                            return Vanadium.validators_types[ "empty" ].test( v ) || /^[a-zA-Z\u00C0-\u00FF\u0100-\u017E\u0391-\u03D6]+$/.test( v );    
+                            
+                        }, "Please enter letters."],
+                       
+                        ["asciialpha", function ( v ) {
+                        
+                            return Vanadium.validators_types[ "empty" ].test( v ) || /^[a-zA-Z]+$/.test( v );
+                             
+                        }, "Please enter letters of ASCII."],
+   
+                        [ "alphanum", function( v ) {
 
-                        }, "Please enter letters."]
-
-                        ["asciialpha", function () {
-
-                             return Vanadium.validators_types[ "empty" ].test( v ) || /^[a-zA-z]+$/.test( v );
-
-                        }, "Please enter letters under ASCII."],
-
-                        [ "alphanum", function() {
-
-                             return Vanadium.validators_types[ "empty" ].test( v ) || /\w/.test( v );
+                             return Vanadium.validators_types[ "empty" ].test( v ) || !/\W/.test( v );
 
                         }, "Please enter letters or non-negative number!"],
-
+                        
                         ['email', function( v ) {
 
                             return ( Vanadium.validators_types["empty"].test( v ) || /\w{1,}[@][\w\-]{1,}([.]([\w\-]{1,})){1,3}$/.test(v) );
 
                         }, 'Please enter correct format, for example: example@gmail.com'],
-
+                    
                         ['url', function( v ) {
-
-
-                            /^(http|https|ftp):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i.test( v );
 
                             return Vanadium.validators_types[ "empty" ].test( v ) ||
                                     /^(http|https|ftp):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i.test( v );
+
                         }, 'Please enter correct format, for example: http://www.google.com'],
-
+                        
                         ["date_au", function ( v ) {         
-
+                     
                             if ( Vanadium.validators_types[ "empty" ].test( v ) )
                                 return true;
-
+                            
                             var regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-
-                            var d = new Date( v.prelace( regex, "$2/$1/$3" ) );
-
+                            
+                            if ( !regex.test( v ) ) return false;
+                            
+                            var d = new Date( v.replace( regex, "$2/$1/$3" ) );
+                            
                             return ( parseInt( RegExp.$2, 10 ) == ( 1 + d.getMonth() ) ) &&
                                    ( parseInt( RegExp.$1, 10 ) == d.getDate() ) &&
-                                   ( parseInt( RegExp.$3, 10 ) == d.getFullYear() );
-
-
-
-                        }, 'Please enter correct format, for example: 01/31/2017.'],
-
+                                   ( parseInt( RegExp.$3, 10 ) == d.getFullYear() );    
+                        }, 'Please enter correct format, for example: mm/dd/yyyy, or dd/mm/yyyy.'],
+                            
                         [ 'length',
 
                             function( v, p ) {
@@ -270,7 +269,7 @@
 
                                 if (p === undefined) {
 
-                                    return true
+                                    return true;
 
                                 } else {
 
@@ -289,7 +288,7 @@
 
                             function( v, p ) {
 
-                                if ( p = undefined ) {
+                                if ( p === undefined ) {
 
                                     return true;
 
@@ -377,43 +376,28 @@
                         ['format',
                             function( v, p ) {
 
-                                var params = p.match(/^\/(((\\\/)|[^\/])*)\/(((\\\/)|[^\/])*)$/);
-
-                                if ( params.length === 7 ) {
+                                var params = p.split( "/" );        
+                                var params2 = v.split( "/" );
+                                
+                                if ( params.length === 3 || params[0] === "" ) {
 
                                     var pattern = params[1];
-                                    var attributes = params[4];
-
-                                    try {
-
-                                        var exp = new RegExp( pattern, attributes );
-                                        return exp.test( v );
-                                    }
-                                    catch( err ) {
-
-                                        return false;
-                                    }
+                                    var attributes = params[2];
+                                    
+                                    var patt = params2[1];
+                                    var att = params2[2];
+                                   
+                                        return ( pattern === patt && attributes === att );
+                                        
                                 } else {
 
                                     return false;
                                 }
                             },  
-
-
                             function ( _v, p ) {
 
-                                var params = p.split( '/' );
-
-                                if ( params.length === 3 && params[0] === "" ) {
-
-                                    return "Input must match <span class='" +
-                                           Vanadium.config.message_value_class + "'>" + p.toString() + "</span>.";
-
-                                } else {
-
-                                    return "Input doesn't match <span class='" + Vanadium.config.message_value_class + 
-                                            "'>" + p.toString() + "</span>.";
-                                } 
+                                return "Input must match <span class='" +
+                                    Vanadium.config.message_value_class + "'>" + p.toString() + "</span>.";
                             }
                         ]
                     ]);
@@ -424,7 +408,7 @@
                         Vanadium.addValidatorTypes( VanadiumCustomValidationTypes ); 
                     }
                 };
-                </script>
+        </script>
     </head>
     <body>
     <div id="demo" style="width:800px; height:auto; margin:auto; padding:0px; margin-top:20px; background:#333">
@@ -481,7 +465,7 @@
                     </tr>
                     <tr>
                         <th>
-                            <label for="checkLetter">Please enter letters:</label>
+                            <label for="checkletter">Please enter letters:</label>
                         </th>
                         <td>
                             <input id="checkLetter" class=":alpha" />
@@ -492,7 +476,7 @@
                             <label for="checkLetterASC">Please enter letters under ASCII code:</label>
                         </th>
                         <td>
-                            <input id="checkLetterASC" class=":asciiAlpha" />
+                            <input id="checkLetterASC" class=":asciialpha" />
                         </td>
                     </tr>
                     <tr>
@@ -500,7 +484,7 @@
                             <label for="checkLetterNum">Please enter letters or positive numbers:</label>
                         </th>
                         <td>
-                            <input id="checkLetterNum" class=":alphaNum" />
+                            <input id="checkLetterNum" class=":alphanum" />
                         </td>
                     </tr>
                     <tr>
@@ -577,11 +561,11 @@
                     </tr>
                     <tr>
                         <th>
-                            <label for="checkValue">Regular expression match:</label>
+                            <label for="checkValue">Regular expression match(/^(Mr.Tom)+$/i):</label>
                         </th>
                         <td>
                             <input id="checkValue" class=":format;/^(Mr.Tom)+$/i" />
-                        </td>
+                        </td>   
                     </tr>
                     <tr>
                         <th>
