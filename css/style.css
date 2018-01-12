@@ -1,0 +1,57 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    font-size: 15px;
+    background: #333;
+}
+form * {
+    padding: 0; 
+    margin: 0;
+}
+form {
+    background:#fff;
+}
+input {
+    margin: 0 8px 0 15px;
+    height: 20px;
+    line-height: 20px;
+    width: 150px;
+}
+input[type="submit"] {
+    widows:100px;
+}
+fieldset {
+    padding: 10px; 
+    border: 1px solid #666666;
+}
+table {
+    width: 100%;
+    border: 0; 
+    border-collapse: collapse; 
+    line-height: 30px; 
+    margin: 10px 0;
+}
+table th {
+    text-align: right; 
+    width: 40%;
+    font-weight: normal;
+}
+table td span {
+    color: #a40000
+}
+input.rightformcss,select.rightformcss,textarea.rightformcss {
+    border: 1px solid green;
+    padding:1px;
+}
+.failmsg {
+    color: #a40000;
+}
+.msgvaluecss{
+    font-style:italic;
+}
+input.failformcss, 
+select.failformcss,
+textarea.failformcss {
+    border: 1px solid #a40000;
+    padding: 1px;
+}
